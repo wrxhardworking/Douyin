@@ -4,6 +4,7 @@
 
 项目服务地址：本机wsl子系统，采用端口映射的方式得以让外面的客户端通过宿主机访问到wsl上的服务。
 
+github地址： [github仓库地址](https://github.com/wrxhardworking/douyin-project)
 
 
 # 二、项目实现
@@ -80,7 +81,8 @@ Json web token用来用户验证，用户权限等操作。
 
 项目架构如图所示：
 
-![img](https://ccabwtm5xl.feishu.cn/space/api/box/stream/download/asynccode/?code=ZDJlZDg2YzcyNzZiMzE3N2M2MTRhMGVlNGNkYzcyYTJfSHkzSWV0SjJ2Vm00UkREV1p5cXZWWlhSMlMzVHlOSUlfVG9rZW46Ym94Y24yNHFNaWNFOUNNUGJ1SFNxdEFka3loXzE2NzcxOTg5MTg6MTY3NzIwMjUxOF9WNA)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/48a283a8e3504cbd9e907432570db4d7.png#pic_center)
+
 
 ##### cache
 
@@ -124,7 +126,8 @@ utls层就是工具层，这个层主要是提供一些字符串变换、解析�
 
 数据对象关系如下图：
 
-![img](https://ccabwtm5xl.feishu.cn/space/api/box/stream/download/asynccode/?code=NzEwZGM1NjY4NTYyZWJiMDJmYzFjNzQzZGUwOTMxNzdfRkNDeVJwbW95SFA5aEVoaDlpaDlYV0hNWlNTQ3QyNlJfVG9rZW46Ym94Y25XZ0tBZU1aMDVPRm50UnBKd1hiTjRiXzE2NzcxOTg5MTg6MTY3NzIwMjUxOF9WNA)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/121e894301fc4226b1687b3566479ee5.jpeg#pic_center)
+
 
 从上如就可以看出，数据库总共有设计了六张表，其中两张关系表，四张实体表。user->video，video->user在喜欢这个关系中是多对多关系，而user<->user在关注关系中是多对多，usesr->comment、user->message、video->comment则都是一对多关系。
 
@@ -132,7 +135,8 @@ utls层就是工具层，这个层主要是提供一些字符串变换、解析�
 
 #### dao
 
-![img](https://ccabwtm5xl.feishu.cn/space/api/box/stream/download/asynccode/?code=OWI4ZDZlOGJmZTFjOWQ5ZjU2ZjI3NGZmZWM2MDE0OGJfUWlzTFpNcDYxN2Y0S0todmRXaExQcTk0MlF6ZWNoVWtfVG9rZW46Ym94Y240MXVNSkJEV0VadENpMVV2Ymd4Y21nXzE2NzcxOTg5MTg6MTY3NzIwMjUxOF9WNA)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/dbee03f738834cc584d7d92d6eed25c5.png#pic_center)
+
 
 首先从dao层的代码说起，dao层主要是用来设计对db数据库的访问并把数据封装对象的过程。代码设计全部采用的是单例模式，我的是gorm框架来对数据库进行访问，直接反射到对应的结构体中。在使用gorm的过程中，通过使用外键，使用gorm框架的的has one、has many 、many to many 、belongs to、通过设置标签进行联合查询，有些特殊需求是通过自写sql来解决的。下面通过看几个例子
 
@@ -693,6 +697,7 @@ redis:
 resouece:
   ipaddress: 172.25.169.130 #宿主机的ip地址
   port: 12345               #宿主机的端口
+  
 type Config struct {
    Mysql    Mysql    `yaml:"mysql"`
    Redis    Redis    `yaml:"redis"`
@@ -1089,13 +1094,20 @@ tests := []struct {
 
 利用ppprof工具进行性能分析，主要是在io.write的时候浪费了较多的性能，就是在回传静态文件的时候浪费了性能。
 
-![img](https://ccabwtm5xl.feishu.cn/space/api/box/stream/download/asynccode/?code=ZDRjN2ZiNjAwMGY2YzlkN2ViZmIyM2QxZDc3Zjc0YWNfMWpUY0hSM2VHNjRiaGpLZ0RXTUpKWGxNUkFGR0pubm1fVG9rZW46Ym94Y25MSzhDQ1B3c2t0bVFHZnR2STNORTViXzE2NzcxOTg5MTg6MTY3NzIwMjUxOF9WNA)
 
-![img](https://ccabwtm5xl.feishu.cn/space/api/box/stream/download/asynccode/?code=YTg1ZTQ0YzRlMGZlOTNhMzI4ZTYyZWEzMGY3NGI0YzNfQXJKTUkxTHZUUTJEYWRTZ3BsUlQ4eWxISVNZVjF2aTNfVG9rZW46Ym94Y245Tnh0STRqVkZvdnU3aXJ6TDFrWEVmXzE2NzcxOTg5MTg6MTY3NzIwMjUxOF9WNA)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/8a9d5764cd6544b0a629362a066a84b1.png#pic_center)
 
-![img](https://ccabwtm5xl.feishu.cn/space/api/box/stream/download/asynccode/?code=NTAxZDQ5YjAyYzA3NGZjMzg1NmE0MTIyZjk2OTQ3ZjdfZVVFUEJiNHh3OEJUNWgzZUdXN0N2R1NicHBsaU5pR2hfVG9rZW46Ym94Y25LYjNkWkV5bjFkTGhzV0xZNUpEN2RnXzE2NzcxOTg5MTg6MTY3NzIwMjUxOF9WNA)
 
-![img](https://ccabwtm5xl.feishu.cn/space/api/box/stream/download/asynccode/?code=ZDI1OTlkNzQ2YmZjYWQyNTI0MmExYmQwYjY0OGQ4Zjhfd0pXT0ZsSmFwaVdWVTJxYnhXajU3MUp1T0t5aEpRV2tfVG9rZW46Ym94Y24zWnFHSWpBWkllYzUzNk1iSGlFbXViXzE2NzcxOTg5MTg6MTY3NzIwMjUxOF9WNA)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/7c3c47cfcbd5487bba28590cddc6e91b.png#pic_center)
+
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/370352f13b3f4644b4908e094f86bb93.png#pic_center)
+
+
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/691c1af048b0418ea0a7ff7c3fdb4042.png#pic_center)
+
+
 
 # 四、项目总结与反思
 
