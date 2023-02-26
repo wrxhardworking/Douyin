@@ -1090,23 +1090,6 @@ tests := []struct {
 }
 ```
 
-### 性能测试：
-
-利用ppprof工具进行性能分析，主要是在io.write的时候浪费了较多的性能，就是在回传静态文件的时候浪费了性能。
-
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/8a9d5764cd6544b0a629362a066a84b1.png#pic_center)
-
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/7c3c47cfcbd5487bba28590cddc6e91b.png#pic_center)
-
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/370352f13b3f4644b4908e094f86bb93.png#pic_center)
-
-
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/691c1af048b0418ea0a7ff7c3fdb4042.png#pic_center)
-
 
 
 # 四、项目总结与反思
