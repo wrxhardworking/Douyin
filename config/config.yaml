@@ -14,7 +14,7 @@ redis:
   maxidle: 5              #连接池最大空闲数
   maxactive: 0            #连接池最大连接数 0 表示不设上
 
-# resource(静态图片和视频的资源)
+# resource(静态图片和视频的资源 根据宿主机的具体ip和映射端口进行更改)
 resouece:
-  ipaddress: 172.20.10.4
+  ipaddress: 10.18.0.120
   port: 12345

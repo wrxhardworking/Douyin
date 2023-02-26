@@ -1,6 +1,8 @@
 package dao
 
 import (
+	"errors"
+	"gorm.io/gorm"
 	"sync"
 )
 
@@ -57,4 +59,14 @@ func (LikeDao) QueryLikeByUserid(userid int64) ([]Video, error) {
 		return nil, err
 	}
 	return user.VideoLieLists, nil
+}
+func (LikeDao) Exists(userid, videoId int64) bool {
+	var like Like
+	if err := db.Where("user_id = ?", userid).Where("video_id = ?", videoId).First(&like).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return false // 记录不存在
+		}
+		return true // 查询过程中发生了其他错误，记录存在
+	}
+	return true // 记录存在
 }

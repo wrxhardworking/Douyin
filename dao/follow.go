@@ -1,7 +1,9 @@
 package dao
 
 import (
+	"errors"
 	"fmt"
+	"gorm.io/gorm"
 	"sync"
 )
 
@@ -60,15 +62,17 @@ func (FollowDao) DeleteFollow(follow *Follow) error {
 	return nil
 }
 
+// QueryFollowLists 获得关注列表
 func (FollowDao) QueryFollowLists(userid int64) ([]User, error) {
 	var userLists []User
 	err := db.Raw("SELECT * FROM  `user` WHERE user.user_id IN ( SELECT follow.followed_id FROM follow WHERE follow.follow_id = ? )", userid).Scan(&userLists).Error
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("%#v", userLists)
 	return userLists, nil
 }
+
+// QueryFollowerLists 获得粉丝列表
 func (FollowDao) QueryFollowerLists(userid int64) ([]User, error) {
 	var userLists []User
 	err := db.Raw("SELECT * FROM  `user` WHERE user.user_id IN ( SELECT follow.follow_id FROM follow WHERE follow.followed_id = ? )", userid).Scan(&userLists).Error
@@ -87,4 +91,16 @@ func (FollowDao) QueryEachFollow(userid int64) ([]User, error) {
 	}
 	fmt.Printf("%#v", userLists)
 	return userLists, nil
+}
+
+// Exists 判断某个关注关系是否存在
+func (FollowDao) Exists(followId, followedId int64) bool {
+	var follow Follow
+	if err := db.Where("follow_id = ?", followId).Where("followed_id = ?", followedId).First(&follow).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return false // 记录不存在
+		}
+		return true // 查询过程中发生了其他错误，记录存在
+	}
+	return true // 记录存在
 }

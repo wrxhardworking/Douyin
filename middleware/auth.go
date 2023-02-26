@@ -34,7 +34,6 @@ func UserAuth() gin.HandlerFunc {
 		//解析
 		fmt.Println(token)
 		t, claim, err := utls.ParseToken(token)
-
 		//判断是否有效
 		if !t.Valid || err != nil {
 			c.JSON(http.StatusOK, handle.UserResponse{
@@ -43,11 +42,9 @@ func UserAuth() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-
 		//1.首先到redis中查找，没有的话去mysql中查找
 		//2.mysql中没有说明token失败
 		var isExists = true
-
 		err = cache.UserIsExists(claim.UserId)
 		if err != nil {
 			fmt.Println(err)

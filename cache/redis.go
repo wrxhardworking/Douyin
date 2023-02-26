@@ -165,7 +165,7 @@ func DeleteUserVideoRelation(userid, videoId int64) error {
 }
 
 // SetUserCount 设置user计数
-func SetUserCount(userid int64) error {
+func SetUserCount(userid int64, initialMap ...map[string]int64) error {
 	conn := RedisPool.Get()
 
 	defer func(conn redis.Conn) {
@@ -175,13 +175,21 @@ func SetUserCount(userid int64) error {
 	}(conn)
 
 	key := getUserCountKey(userid)
-	_, err := conn.Do("hmset", redis.Args{key}.AddFlat(map[string]int64{
-		"followCount":   0,
-		"followerCount": 0,
-		"workCount":     0,
-		"favoriteCount": 0,
-		"totalFavorite": 0,
-	})...)
+	if len(initialMap) == 0 {
+		_, err := conn.Do("hmset", redis.Args{key}.AddFlat(map[string]int64{
+			"followCount":   0,
+			"followerCount": 0,
+			"workCount":     0,
+			"favoriteCount": 0,
+			"totalFavorite": 0,
+		})...)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+	//可变参数传入了参数
+	_, err := conn.Do("hmset", redis.Args{key}.AddFlat(initialMap[0])...)
 	if err != nil {
 		return err
 	}

@@ -88,19 +88,27 @@ func GetFollowLists(userid int64) ([]dao.User, error) {
 func GetFollowerLists(userid int64) ([]dao.User, error) {
 	var err error
 	var UserLists []dao.User
-	var FollowUserLists []dao.User
+	//var FollowUserLists []dao.User
 	UserLists, err = dao.GetFollowInstance().QueryFollowerLists(userid)
-	FollowUserLists, err = dao.GetFollowInstance().QueryFollowLists(userid)
+	//FollowUserLists, err = dao.GetFollowInstance().QueryFollowLists(userid)
 	//fixme redis缓存
 	for index1 := range UserLists {
 		if cache.IsUserRelation(userid, UserLists[index1].ID) {
 			UserLists[index1].IsFollow = true
 		} else {
-			for index2 := range FollowUserLists {
-				if UserLists[index1].ID == FollowUserLists[index2].ID {
-					UserLists[index1].IsFollow = true
+			if dao.GetFollowInstance().Exists(userid, UserLists[index1].ID) {
+				UserLists[index1].IsFollow = true
+				err = cache.SetUserRelation(userid, UserLists[index1].ID)
+				if err != nil {
+					// fixme 这里只是缓存不需要直接返回错误
+					log.Println(err.Error())
 				}
 			}
+			//for index2 := range FollowUserLists {
+			//	if UserLists[index1].ID == FollowUserLists[index2].ID {
+			//		UserLists[index1].IsFollow = true
+			//	}
+			//}
 		}
 		err := common.UserCountSearchStrategy(&UserLists[index1], UserLists[index1].ID)
 		if err != nil {
